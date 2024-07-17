@@ -24,22 +24,27 @@ res.status(404).json({ message: error.message });
 }
 });
 // afficher la liste des articles par page
-router.get('/pagination', async(req, res) => { 
-const page = req.query.page ||1 // Current page
-const limit = req.query.limit ||5; // Number of items per page
-// Calculez le nombre d'éléments à sauter (offset)
-const offset = (page - 1) * limit;
-try {
- // Effectuez la requête à votre source de données en utilisant les paramètres 
-const articlesTot = await Article.countDocuments();
-const articles = await Article.find( {}, null, {sort: {'_id': -1}})
-.skip(offset)
-.limit(limit)
-res.status(200).json({articles:articles,tot:articlesTot});
-} catch (error) {
-res.status(404).json({ message: error.message });
-}
-});
+router.get('/art/pagination', async(req, res) => {
+
+  
+    const page = parseInt(req.query.page);
+    const pageSize = parseInt(req.query.pageSize);
+    
+    // Calculate the start and end indexes for the requested page
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
+
+    const articles = await Article.find().populate("scategorieID").exec()
+    // Slice the products array based on the indexes
+    const paginatedProducts = articles.slice(startIndex, endIndex);
+    
+    // Calculate the total number of pages
+    const totalPages = Math.ceil(articles.length / pageSize);
+    
+    // Send the paginated products and total pages as the API response
+    res.json({ products: paginatedProducts, totalPages });
+  });
+  
 // chercher un article
 router.get('/:articleId',async(req, res)=>{
 try {
