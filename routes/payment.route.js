@@ -9,7 +9,7 @@ mode: "payment",
 line_items: req.body.cartItems.map(item => {
 return {
 price_data: {
-currency: "TND",
+currency: "usd",
 product_data: {
 name: item.designation,
 },
