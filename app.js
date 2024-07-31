@@ -5,13 +5,16 @@ const cors = require('cors')
 const categorieRouter=require("./routes/categorie.routes")
 const scategorieRouter=require("./routes/scategorie.routes")
 const articleRouter=require("./routes/article.routes")
+const paymentRouter =require("./routes/payment.route.js");
 const app = express();
 
 //config dotenv
 dotenv.config()
 //Les cors
 
-app.use(cors())
+app.use(cors({
+    origin:'*'
+    }))
 
 app.get("/",(req,res)=>{
     res.send("page acceuil")
@@ -33,6 +36,7 @@ process.exit();
 app.use( "/api/categories",categorieRouter)
 app.use( "/api/scategories",scategorieRouter)
 app.use( "/api/articles",articleRouter)
+app.use('/api/payment', paymentRouter);
 app.listen(process.env.PORT)
 console.log("application run at port "+ process.env.PORT)
 

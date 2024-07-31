@@ -26,7 +26,7 @@ res.status(404).json({ message: error.message });
 // afficher la liste des articles par page
 router.get('/art/pagination', async(req, res) => {
 
-  
+    const filtre = req.query.filtre || "";
     const page = parseInt(req.query.page);
     const pageSize = parseInt(req.query.pageSize);
     
@@ -34,8 +34,11 @@ router.get('/art/pagination', async(req, res) => {
     const startIndex = (page - 1) * pageSize;
     const endIndex = page * pageSize;
 
-    const articles = await Article.find().populate("scategorieID").exec()
-    // Slice the products array based on the indexes
+    
+    
+    const articles = await Article.find({ designation: { $regex: filtre, $options:
+      "i"}}, null, {sort: {'_id': -1}}).populate("scategorieID").exec()    // Slice the products array based on the indexes
+    
     const paginatedProducts = articles.slice(startIndex, endIndex);
     
     // Calculate the total number of pages
